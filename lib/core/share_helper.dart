@@ -1,5 +1,8 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 Future<void> shareAppApk(BuildContext context) async {
@@ -32,9 +35,17 @@ Future<void> shareAppApk(BuildContext context) async {
     }
 
     if (apkPath != null && apkPath.isNotEmpty) {
+      final env = dotenv.env['APP_ENV'] ?? 'dev';
+      final version = dotenv.env['APP_VERSION'] ?? '1.0.0';
+      final customName = 'flamehouse_${env}_$version.apk';
+      
+      final tempDir = await getTemporaryDirectory();
+      final tempFile = File('${tempDir.path}/$customName');
+      await File(apkPath).copy(tempFile.path);
+
       await SharePlus.instance.share(
         ShareParams(
-          files: [XFile(apkPath, mimeType: 'application/vnd.android.package-archive')],
+          files: [XFile(tempFile.path, mimeType: 'application/vnd.android.package-archive')],
           text: 'Flamehouse App APK',
         ),
       );
