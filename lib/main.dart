@@ -1,17 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'core/navigator_key.dart';
+import 'features/auth/auth_service.dart';
 import 'features/auth/login_screen.dart';
+import 'features/dashboard/dashboard_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
   
-  runApp(const MyApp());
+  final authService = AuthService();
+  final bool loggedIn = await authService.isLoggedIn();
+  
+  runApp(MyApp(isLoggedIn: loggedIn));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final bool isLoggedIn;
+  const MyApp({super.key, required this.isLoggedIn});
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +93,7 @@ class MyApp extends StatelessWidget {
           shape: Border(bottom: BorderSide(color: Color(0xFFE2E8F0), width: 1.0)),
         ),
       ),
-      home: const LoginScreen(),
+      home: isLoggedIn ? const DashboardScreen() : const LoginScreen(),
     );
   }
 }

@@ -50,7 +50,7 @@ void main() {
   });
 
   testWidgets('Login Screen Form Validation and Render Test', (WidgetTester tester) async {
-    await tester.pumpWidget(const MyApp());
+    await tester.pumpWidget(const MyApp(isLoggedIn: false));
 
     // Verify fields and buttons exist
     expect(find.text('Sign In'), findsOneWidget);
@@ -59,7 +59,7 @@ void main() {
   });
 
   testWidgets('Login Screen Negative Scenario - Invalid Credentials Error Display', (WidgetTester tester) async {
-    await tester.pumpWidget(const MyApp());
+    await tester.pumpWidget(const MyApp(isLoggedIn: false));
 
     // Enter wrong credentials
     await tester.enterText(find.byType(TextField).at(0), 'bad_username');
@@ -74,7 +74,7 @@ void main() {
   });
 
   testWidgets('Login Screen Positive Scenario - Correct Credentials Routing', (WidgetTester tester) async {
-    await tester.pumpWidget(const MyApp());
+    await tester.pumpWidget(const MyApp(isLoggedIn: false));
 
     // Enter correct credentials
     await tester.enterText(find.byType(TextField).at(0), 'admin');
@@ -89,6 +89,6 @@ void main() {
 
     // Verify snackbar or dashboard screen title is loaded indicating successful route push
     expect(find.text('Login successful!'), findsOneWidget);
-    expect(find.text('Dashboard'), findsOneWidget);
+    expect(find.text('Viral Bytes Console'), findsOneWidget);
   });
 }
