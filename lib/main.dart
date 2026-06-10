@@ -26,11 +26,10 @@ class MyApp extends StatelessWidget {
           primary: const Color(0xFF4F46E5), // Indigo-600
           secondary: const Color(0xFF0EA5E9), // Sky-500
           surface: Colors.white,
-          background: const Color(0xFFF8FAFC), // Slate-50
           error: const Color(0xFFEF4444), // Red-500
         ),
         scaffoldBackgroundColor: const Color(0xFFF8FAFC),
-        cardTheme: CardTheme(
+        cardTheme: CardThemeData(
           color: Colors.white,
           elevation: 0,
           shape: RoundedRectangleBorder(
@@ -77,7 +76,7 @@ class MyApp extends StatelessWidget {
           foregroundColor: Color(0xFF0F172A), // Slate-900
           elevation: 0,
           centerTitle: false,
-          border: Border(bottom: BorderSide(color: Color(0xFFE2E8F0), width: 1.0)),
+          shape: Border(bottom: BorderSide(color: Color(0xFFE2E8F0), width: 1.0)),
         ),
       ),
       home: const LoginScreen(),

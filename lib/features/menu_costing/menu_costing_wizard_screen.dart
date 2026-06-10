@@ -357,8 +357,9 @@ class _MenuCostingWizardScreenState extends State<MenuCostingWizardScreen> {
           ),
         ],
       ),
-    );
-  }
+    ),
+  );
+}
 
   // --- Step UI Builders ---
   Widget _buildPrepStep(ThemeData theme) {

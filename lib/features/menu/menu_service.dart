@@ -74,19 +74,6 @@ class MenuService {
     }
   }
 
-  Future<bool> updateMenuItemStatus(int id, String status) async {
-    try {
-      final response = await _apiClient.dio.put(
-        '/menu/$id',
-        data: {
-          'status': status,
-        },
-      );
-      return response.statusCode == 200;
-    } on DioException {
-      return false;
-    }
-  }
 
   Future<bool> deleteMenuItem(int id) async {
     try {

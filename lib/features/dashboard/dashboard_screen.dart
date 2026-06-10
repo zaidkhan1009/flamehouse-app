@@ -24,7 +24,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   List<MenuItem> _menuItems = [];
   List<InventoryItem> _inventoryItems = [];
-  List<InventoryCategory> _categories = [];
   
   bool _isLoading = true;
   int _lowStockThreshold = 5;
@@ -55,7 +54,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
       setState(() {
         _menuItems = results[0] as List<MenuItem>;
         _inventoryItems = results[1] as List<InventoryItem>;
-        _categories = results[2] as List<InventoryCategory>;
         _isLoading = false;
       });
     } catch (e) {

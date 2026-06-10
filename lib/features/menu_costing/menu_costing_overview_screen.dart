@@ -73,8 +73,6 @@ class _MenuCostingOverviewScreenState extends State<MenuCostingOverviewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Menu Costing Wizard'),
