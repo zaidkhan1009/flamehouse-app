@@ -42,7 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
       _errorMessage = null;
     });
 
-    final success = await _authService.login(
+    final errorMessage = await _authService.login(
       _usernameController.text.trim(),
       _passwordController.text,
     );
@@ -51,7 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
       _isLoading = false;
     });
 
-    if (success) {
+    if (errorMessage == null) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -65,7 +65,7 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     } else {
       setState(() {
-        _errorMessage = 'Invalid username or password';
+        _errorMessage = errorMessage;
       });
     }
   }

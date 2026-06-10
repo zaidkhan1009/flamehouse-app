@@ -5,7 +5,7 @@ import '../../core/network.dart';
 class AuthService {
   final ApiClient _apiClient = ApiClient();
 
-  Future<bool> login(String username, String password) async {
+  Future<String?> login(String username, String password) async {
     try {
       final response = await _apiClient.dio.post(
         '/auth/login',
@@ -19,11 +19,22 @@ class AuthService {
         final token = response.data['access_token'];
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('access_token', token);
-        return true;
+        return null;
       }
-      return false;
-    } on DioException {
-      return false;
+      return 'Invalid username or password';
+    } on DioException catch (e) {
+      // ignore: avoid_print
+      print("LOGIN ERROR: type=${e.type}, message=${e.message}, status=${e.response?.statusCode}, response=${e.response?.data}");
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.sendTimeout ||
+          e.type == DioExceptionType.receiveTimeout ||
+          e.type == DioExceptionType.connectionError) {
+        return 'Connection failed. Please check your network or server status.';
+      }
+      if (e.response?.statusCode == 401) {
+        return 'Invalid username or password';
+      }
+      return 'An unexpected error occurred. Please try again.';
     }
   }
 

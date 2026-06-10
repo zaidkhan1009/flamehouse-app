@@ -91,4 +91,36 @@ void main() {
     expect(find.text('Login successful!'), findsOneWidget);
     expect(find.text('Viral Bytes Console'), findsOneWidget);
   });
+
+  testWidgets('Login Bug Repro - Invalid then Valid credentials', (WidgetTester tester) async {
+    await tester.pumpWidget(const MyApp(isLoggedIn: false));
+
+    // 1. Enter wrong credentials
+    await tester.enterText(find.byType(TextField).at(0), 'bad_username');
+    await tester.enterText(find.byType(TextField).at(1), 'wrong_password');
+    
+    // Tap the Login button
+    await tester.ensureVisible(find.byType(ElevatedButton));
+    await tester.tap(find.byType(ElevatedButton));
+    await tester.pumpAndSettle();
+
+    // Verify error text is displayed
+    expect(find.text('Invalid username or password'), findsOneWidget);
+
+    // 2. Enter correct credentials
+    await tester.enterText(find.byType(TextField).at(0), 'admin');
+    await tester.enterText(find.byType(TextField).at(1), 'password');
+    
+    // Tap the Login button
+    await tester.ensureVisible(find.byType(ElevatedButton));
+    await tester.tap(find.byType(ElevatedButton));
+    await tester.pump(); // Triggers the tap event
+    await tester.pump(const Duration(milliseconds: 100)); // Resolves the async login network request
+    await tester.pump(const Duration(milliseconds: 100)); // Triggers routing push
+    await tester.pump(const Duration(milliseconds: 300)); // Completes the page slide transition
+
+    // Verify snackbar indicating successful route push
+    expect(find.text('Login successful!'), findsOneWidget);
+    expect(find.text('Viral Bytes Console'), findsOneWidget);
+  });
 }

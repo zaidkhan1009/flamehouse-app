@@ -33,10 +33,16 @@ class ApiClient {
 
     _dio.interceptors.add(InterceptorsWrapper(
       onRequest: (options, handler) async {
+        if (options.path.endsWith('/auth/login')) {
+          options.headers.remove('Authorization');
+          return handler.next(options);
+        }
         final prefs = await SharedPreferences.getInstance();
         final token = prefs.getString('access_token');
         if (token != null) {
           options.headers['Authorization'] = 'Bearer $token';
+        } else {
+          options.headers.remove('Authorization');
         }
         return handler.next(options);
       },
