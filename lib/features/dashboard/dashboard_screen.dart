@@ -180,7 +180,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
 
     try {
-      const platform = MethodChannel('com.example.flamehouse_app/apk_info');
+      const platform = MethodChannel('com.test.flamehouse/apk_info');
       final String? apkPath = await platform.invokeMethod<String>('getApkPath');
       
       if (context.mounted) {
