@@ -49,25 +49,6 @@ def get_connected_devices():
                 })
     return devices
 
-def launch_emulator(emulator_id):
-    print(f"Launching emulator: {emulator_id}...")
-    subprocess.Popen(["/Users/admin/.flutter-sdk/bin/flutter", "emulators", "--launch", emulator_id],
-                     stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    
-    print("Waiting for device to boot and connect...")
-    for _ in range(30):
-        time.sleep(2)
-        devices = get_connected_devices()
-        for d in devices:
-            if emulator_id == "apple_ios_simulator" and "ios" in d["platform"] and "simulator" in d["name"].lower():
-                print(f"iOS Simulator is online: {d['name']} ({d['id']})")
-                return d["id"]
-            if emulator_id == "Pixel_6_API_35" and "android" in d["platform"]:
-                print(f"Android Emulator is online: {d['name']} ({d['id']})")
-                return d["id"]
-    print("Timeout waiting for emulator to connect.")
-    sys.exit(1)
-
 def main():
     parser = argparse.ArgumentParser(description="Build and install/run Flamehouse app on various platforms.")
     parser.add_argument("-p", "--platform", choices=["android", "ios", "desktop", "web"], required=True,
@@ -110,17 +91,9 @@ def main():
             target_device = selected["id"]
             print(f"Auto-detected connected device for {args.platform}: {selected['name']} ({target_device})")
         else:
-            if args.platform == "android":
-                target_device = launch_emulator("Pixel_6_API_35")
-            elif args.platform == "ios":
-                target_device = launch_emulator("apple_ios_simulator")
-            elif args.platform == "desktop":
-                target_device = "macos"
-            elif args.platform == "web":
-                target_device = "chrome"
-            else:
-                print(f"No connected devices found for platform: {args.platform}")
-                sys.exit(1)
+            print(f"Error: No connected physical devices found for platform: {args.platform}")
+            print("Emulator usage is disabled as per instruction.")
+            sys.exit(1)
                 
     # 3. Determine build mode parameter
     mode_flag = "--debug"
