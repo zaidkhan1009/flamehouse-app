@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../core/share_helper.dart';
 import '../dashboard/dashboard_screen.dart';
 import 'auth_service.dart';
 
@@ -72,8 +73,57 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isAndroid = theme.platform == TargetPlatform.android;
 
     return Scaffold(
+      appBar: isAndroid
+          ? AppBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              iconTheme: IconThemeData(color: theme.colorScheme.primary),
+            )
+          : null,
+      drawer: isAndroid
+          ? Drawer(
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: [
+                  DrawerHeader(
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Color(0xFF4F46E5), Color(0xFF6366F1)],
+                      ),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8.0),
+                          decoration: const BoxDecoration(
+                            color: Colors.white24,
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(Icons.restaurant_menu_rounded, color: Colors.white, size: 32),
+                        ),
+                        const SizedBox(height: 12),
+                        const Text('Flamehouse', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                        const Text('Operations Console', style: TextStyle(color: Colors.white70, fontSize: 13)),
+                      ],
+                    ),
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.share_outlined),
+                    title: const Text('Share App'),
+                    onTap: () {
+                      Navigator.pop(context);
+                      shareAppApk(context);
+                    },
+                  ),
+                ],
+              ),
+            )
+          : null,
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24.0),
