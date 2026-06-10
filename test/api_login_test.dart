@@ -7,7 +7,7 @@ import 'package:flamehouse_app/features/auth/auth_service.dart';
 void main() {
   setUpAll(() async {
     // We load the local development .env config
-    await dotenv.load(fileName: ".env");
+    await dotenv.load(fileName: ".env.development");
     SharedPreferences.setMockInitialValues({});
   });
 
