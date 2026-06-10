@@ -19,6 +19,14 @@ class MyApp extends StatelessWidget {
       navigatorKey: navigatorKey,
       title: 'Viral Bytes Console',
       debugShowCheckedModeBanner: false,
+      builder: (context, child) {
+        return GestureDetector(
+          onTap: () {
+            FocusManager.instance.primaryFocus?.unfocus();
+          },
+          child: child,
+        );
+      },
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
