@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../menu/menu_screen.dart';
 import '../menu/menu_service.dart';
@@ -156,6 +158,66 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
+  Future<void> _shareApk(BuildContext context) async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(
+        child: Card(
+          child: Padding(
+            padding: EdgeInsets.all(20.0),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(width: 16),
+                Text('Preparing APK...'),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
+    try {
+      const platform = MethodChannel('com.example.flamehouse_app/apk_info');
+      final String? apkPath = await platform.invokeMethod<String>('getApkPath');
+      
+      if (context.mounted) {
+        Navigator.pop(context);
+      }
+
+      if (apkPath != null && apkPath.isNotEmpty) {
+        await SharePlus.instance.share(
+          ShareParams(
+            files: [XFile(apkPath, mimeType: 'application/vnd.android.package-archive')],
+            text: 'Flamehouse App APK',
+          ),
+        );
+      } else {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Failed to locate the APK file.')),
+          );
+        }
+      }
+    } on PlatformException catch (e) {
+      if (context.mounted) {
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Native error: ${e.message}')),
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -247,6 +309,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 Navigator.push(context, MaterialPageRoute(builder: (_) => const MenuCostingOverviewScreen()));
               },
             ),
+            if (Theme.of(context).platform == TargetPlatform.android) ...[
+              const Divider(),
+              ListTile(
+                leading: const Icon(Icons.share_outlined),
+                title: const Text('Share App'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _shareApk(context);
+                },
+              ),
+            ],
           ],
         ),
       ),
