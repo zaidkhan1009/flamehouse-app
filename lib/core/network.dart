@@ -42,6 +42,9 @@ class ApiClient {
       },
       onError: (DioException e, handler) async {
         if (e.response?.statusCode == 401) {
+          if (e.requestOptions.path.endsWith('/auth/login')) {
+            return handler.next(e);
+          }
           final prefs = await SharedPreferences.getInstance();
           await prefs.remove('access_token');
           navigatorKey.currentState?.pushAndRemoveUntil(
