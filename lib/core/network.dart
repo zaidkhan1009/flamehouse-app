@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -14,8 +15,13 @@ class ApiClient {
   }
 
   ApiClient._internal() {
+    String baseUrl = dotenv.env['API_BASE_URL'] ?? 'http://localhost:10000/api/v1';
+    if (Platform.isAndroid && baseUrl.contains('localhost')) {
+      baseUrl = baseUrl.replaceAll('localhost', '10.0.2.2');
+    }
+
     _dio = Dio(BaseOptions(
-      baseUrl: dotenv.env['API_BASE_URL'] ?? 'http://localhost:10000/api/v1',
+      baseUrl: baseUrl,
       connectTimeout: const Duration(seconds: 10),
       receiveTimeout: const Duration(seconds: 10),
       headers: {
