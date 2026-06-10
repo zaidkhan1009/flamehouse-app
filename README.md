@@ -94,3 +94,26 @@ When using the **Share App** feature from the Login Screen drawer menu on Androi
 - The app automatically duplicates the running base APK into a temporary folder.
 - It renames the file using the convention: `flamehouse_[env]_[version].apk` (e.g. `flamehouse_dev_1.0.0.apk`) before calling the Android share sheet.
 - This helps you share specific environment builds cleanly with QA and other stakeholders.
+
+---
+
+## 🛑 Verification & Push Protection Rule
+
+Before committing or pushing any feature or bug fix, you **must** verify that all code compiles, follows all lint rules, and passes all widget/unit tests:
+
+1. **Verify Static Code Analysis**:
+   ```bash
+   /Users/admin/.flutter-sdk/bin/flutter analyze
+   ```
+2. **Verify Tests**:
+   ```bash
+   /Users/admin/.flutter-sdk/bin/flutter test
+   ```
+
+To automate this check, the project contains a pre-push git hook. If it's not active:
+1. Copy the script to `.git/hooks/pre-push` inside the project.
+2. Make it executable:
+   ```bash
+   chmod +x .git/hooks/pre-push
+   ```
+This hook will automatically block any `git push` if code analysis or unit tests fail.
